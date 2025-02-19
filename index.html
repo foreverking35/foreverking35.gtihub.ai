@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbera Braian Gonzalo - Abogado UBA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .App {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            width: 100%;
+            align-items: center;
+        }
+
+        .Header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .Header nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .Header nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        .Header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .Header nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .MainContent {
+            flex: 1;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+
+        .MainContent h2 {
+            font-weight: 700;
+        }
+
+        .MainContent p {
+            font-weight: 300;
+        }
+
+        .ContactForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ContactForm label {
+            margin-top: 10px;
+        }
+
+        .ContactForm input,
+        .ContactForm textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .ContactForm button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .ContactForm button:hover {
+            background-color: #45a049;
+        }
+
+        .ContactForm p {
+            margin-top: 20px;
+            font-weight: 300;
+        }
+
+        .Footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <footer class="Footer">
+        <p>&copy; 2025 Barbera Braian Gonzalo - Abogado UBA. Todos los derechos reservados.</p>
+    </footer>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@mui/material@5.0.0/umd/material-ui.production.min.js"></script>
+    <script src="https://unpkg.com/@emotion/react@11.0.0/umd/emotion-react.umd.min.js"></script>
+    <script src="https://unpkg.com/@emotion/styled@11.0.0/umd/emotion-styled.umd.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel">
+        const { AppBar, Toolbar, Typography, Button, Container, TextField, Box } = MaterialUI;
+
+        function Header() {
+            return (
+                <AppBar position="static">
+                    <Toolbar>
+                        <Typography variant="h6" style={{ flexGrow: 1 }}>
+                            Barbera Braian Gonzalo - Abogado UBA
+                        </Typography>
+                        <Button color="inherit" href="#family-law">Derecho de Familia</Button>
+                        <Button color="inherit" href="#criminal-law">Derecho Penal</Button>
+                        <Button color="inherit" href="#contact">Contacto</Button>
+                    </Toolbar>
+                </AppBar>
+            );
+        }
+
+        function MainContent() {
+            return (
+                <Container>
+                    <section id="family-law" style={{ marginTop: '20px' }}>
+                        <Typography variant="h4" gutterBottom>
+                            Derecho de Familia
+                        </Typography>
+                        <Typography variant="body1" paragraph>
+                            Asesoramiento y representación en casos de divorcio, custodia de menores, adopciones y más.
+                        </Typography>
+                    </section>
+                    <section id="criminal-law" style={{ marginTop: '20px' }}>
+                        <Typography variant="h4" gutterBottom>
+                            Derecho Penal
+                        </Typography>
+                        <Typography variant="body1" paragraph>
+                            Defensa en casos penales, representación en juicios, y asesoramiento legal en delitos.
+                        </Typography>
+                    </section>
+                    <section id="contact" style={{ marginTop: '20px' }}>
+                        <Typography variant="h4" gutterBottom>
+                            Contacto
+                        </Typography>
+                        <ContactForm />
+                    </section>
+                </Container>
+            );
+        }
+
+        function ContactForm() {
+            return (
+                <Box component="form" sx={{ display: 'flex', flexDirection: 'column', mt: 2 }}>
+                    <TextField label="Nombre" variant="outlined" margin="normal" required />
+                    <TextField label="Correo Electrónico" variant="outlined" margin="normal" required />
+                    <TextField
+                        label="Mensaje"
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        multiline
+                        rows={4}
+                    />
+                    <Button variant="contained" color="primary" type="submit" sx={{ mt: 2 }}>
+                        Enviar
+                    </Button>
+                    <Typography variant="body1" sx={{ mt: 2 }}>
+                        Teléfono de Contacto: 1139007378
+                    </Typography>
+                </Box>
+            );
+        }
+
+        function Footer() {
+            return (
+                <AppBar position="static" component="footer">
+                    <Toolbar>
+                        <Typography variant="body1" color="inherit" align="center" style={{ width: '100%' }}>
+                            &copy; 2025 Barbera Braian Gonzalo - Abogado UBA. Todos los derechos reservados.
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+            );
+        }
+
+        function App() {
+            return (
+                <div className="App">
+                    <Header />
+                    <MainContent />
+                    <Footer />
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

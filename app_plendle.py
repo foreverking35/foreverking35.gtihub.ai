@@ -1,63 +1,63 @@
 import streamlit as st
 import requests
 
-st.title("🛰️ Monitor de Pendle Online")
+st.set_page_config(page_title="Pendle Data Engine", page_icon="🛰️")
 
-def traer_precio():
-    # INTENTO 1: CoinGecko
+st.title("🛰️ Pendle Market Intelligence")
+st.markdown("---")
+
+def obtener_datos():
+    # Intentamos con la API de Binance (más robusta para ingenieros)
     try:
-        url_cg = "https://api.coingecko.com/api/v3/simple/price?ids=pendle&vs_currencies=usd"
-        r = requests.get(url_cg, timeout=5)
-        return r.json()['pendle']['usd'], "CoinGecko"
-    except:
-        # INTENTO 2: Binance (Si el primero falla)
-        try:
-            url_binance = "https://api.binance.com/api/v3/ticker/price?symbol=PENDLEUSDT"
-            r = requests.get(url_binance, timeout=5)
-            return float(r.json()['price']), "Binance"
-        except:
-            return None, None
-
-# ... (aquí va tu código anterior de import y st.title)
-
-def obtener_datos_avanzados():
-    try:
-        # 1. Pedimos el resumen de 24 horas a Binance
+        # Añadimos un 'header' para que la API no nos bloquee pensando que somos un robot
+        headers = {'User-Agent': 'Mozilla/5.0'}
         url = "https://api.binance.com/api/v3/ticker/24hr?symbol=PENDLEUSDT"
-        r = requests.get(url, timeout=5).json()
         
-        datos = {
-            "actual": float(r['lastPrice']),
-            "minimo_24h": float(r['lowPrice']),  # Este es el "Piso" de hoy
-            "cambio_porcentaje": float(r['priceChangePercent']),
-            "volumen": float(r['quoteVolume'])
-        }
-        return datos
-    except:
+        response = requests.get(url, headers=headers, timeout=10)
+        
+        # Verificamos si la respuesta es exitosa (código 200)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
+    except Exception as e:
+        # Esto nos permite ver el error exacto en la consola si algo falla
+        print(f"Error de conexión: {e}")
         return None
 
-# Ejecutamos la función
-d = obtener_datos_avanzados()
+# Procesamiento de Datos (Data Processing Layer)
+datos = obtener_datos()
 
-if d:
-    # FILA DE MÉTRICAS
+if datos:
+    # Transformamos los textos en números (Ingeniería de Datos)
+    actual = float(datos['lastPrice'])
+    piso = float(datos['lowPrice'])
+    cambio = float(datos['priceChangePercent'])
+    
+    # Visualización
     col1, col2 = st.columns(2)
+    col1.metric("PRECIO ACTUAL", f"${actual:.3f} USD", f"{cambio}%")
+    col2.metric("PISO DE HOY (24h Low)", f"${piso:.3f} USD")
     
-    with col1:
-        st.metric("Precio Actual", f"${d['actual']} USD", f"{d['cambio_porcentaje']}%")
+    # Lógica de soporte (Piso)
+    distancia = ((actual - piso) / piso) * 100
     
-    with col2:
-        # Mostramos el piso (mínimo de 24h)
-        st.metric("Piso (24h Low)", f"${d['minimo_24h']} USD")
-
-    # LÓGICA DE INGENIERÍA: Detección de rebote
-    # Si el precio actual está cerca (1%) del mínimo, es zona de rebote
-    distancia_al_piso = ((d['actual'] - d['minimo_24h']) / d['minimo_24h']) * 100
-    
-    if distancia_al_piso < 1.0:
-        st.warning(f"⚠️ ATENCIÓN: Precio muy cerca del piso técnico (${d['minimo_24h']}). Posible zona de rebote.")
+    if distancia < 1.0:
+        st.warning(f"🚨 ALERTA: Estamos a solo {distancia:.2f}% del piso (${piso}). ¡Zona de rebote probable!")
     else:
-        st.success(f"✅ El precio está un {distancia_al_piso:.2f}% por encima del piso de hoy.")
-
+        st.info(f"ℹ️ El precio está {distancia:.2f}% por encima del piso más cercano.")
+        
+    st.success("📡 Sensores conectados y recibiendo datos de Binance.")
 else:
-    st.error("No se pudieron conectar los sensores de datos.")
+    # Si falla, mostramos este botón para forzar el reintento
+    st.error("❌ Error de enlace: La API está saturada o no responde.")
+    if st.button('🔄 Re-conectar Sensores'):
+        st.rerun()
+
+st.markdown("---")
+st.caption("Arquitectura de Datos: Python + Streamlit Cloud + Binance API")
+
+
+
+
+  
